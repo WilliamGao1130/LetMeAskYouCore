@@ -1,4 +1,4 @@
-# LetMeAdkYouCore(LMAU-Core)
+# LetMeAskYouCore(LMAU-Core)
 
 Core code for ai chatbot applications, written in Java.
 
