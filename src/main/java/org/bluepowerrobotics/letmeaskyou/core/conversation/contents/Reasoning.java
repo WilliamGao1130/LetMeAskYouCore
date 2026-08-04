@@ -9,7 +9,7 @@ public class Reasoning implements Content {
 
     @Override
     public String getKind() {
-        return "RichText";
+        return "Reasoning";
     }
 
     @Override

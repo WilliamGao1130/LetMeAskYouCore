@@ -1,11 +1,13 @@
 package org.bluepowerrobotics.letmeaskyou.core.adapter;
 
+import org.bluepowerrobotics.converter.core.ChatModel;
 import org.bluepowerrobotics.letmeaskyou.core.config.ModelConfig;
-import org.bluepowerrobotics.letmeaskyou.core.conversation.Conversation;
-import org.bluepowerrobotics.letmeaskyou.core.conversation.Message;
 
+/**
+ * 提供商适配器：把一个 {@link ModelConfig} 变成可调用的 {@link ChatModel}。
+ * 所有内置提供商都通过 AIAPIConverter 实现，自定义提供商可自行注册。
+ */
+@FunctionalInterface
 public interface ApiAdapter {
-    String getProviderName();
-    String getRequestBody(Conversation conversation, ModelConfig modelConfig);
-    Message getResponse(String ResponseBody);
+    ChatModel createChatModel(ModelConfig modelConfig);
 }

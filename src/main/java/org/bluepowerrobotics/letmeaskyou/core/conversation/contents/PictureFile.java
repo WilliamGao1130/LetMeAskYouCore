@@ -2,10 +2,16 @@ package org.bluepowerrobotics.letmeaskyou.core.conversation.contents;
 
 public class PictureFile implements Content {
     private final StringBuffer pictureBase64 = new StringBuffer();
+    private final String mimeType;
     private boolean finished = false;
 
     public PictureFile(String base64){
+        this(base64, "image/png");
+    }
+
+    public PictureFile(String base64, String mimeType){
         pictureBase64.append(base64);
+        this.mimeType = mimeType == null || mimeType.isEmpty() ? "image/png" : mimeType;
     }
     @Override
     public String getKind() {
@@ -20,6 +26,10 @@ public class PictureFile implements Content {
     @Override
     public Object get() {
         return pictureBase64.toString();
+    }
+
+    public String getMimeType() {
+        return mimeType;
     }
 
     @Override

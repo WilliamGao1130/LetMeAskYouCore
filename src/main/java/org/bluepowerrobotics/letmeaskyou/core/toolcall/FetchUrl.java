@@ -1,17 +1,18 @@
 package org.bluepowerrobotics.letmeaskyou.core.toolcall;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static org.bluepowerrobotics.letmeaskyou.core.web.WebFetcher.createWebClient;
 
 public class FetchUrl implements Tool{
+    private static final ObjectMapper JSON = new ObjectMapper();
+
     @Override
     public String getName() {
         return "FetchUrl";
@@ -24,32 +25,37 @@ public class FetchUrl implements Tool{
     }
 
     @Override
-    public List<Map.Entry<String, String>> getParametersTypeAndName() {
-        List<Map.Entry<String, String>> params = new ArrayList<>();
-        // 顺序：url 在前，waitMs 在后
-        params.add(new AbstractMap.SimpleEntry<>("string", "url"));
-        params.add(new AbstractMap.SimpleEntry<>("int", "JSWaitMs"));
-        return params;
+    public String getParametersJson() {
+        return "{"
+                + "\"type\":\"object\","
+                + "\"properties\":{"
+                + "\"url\":{\"type\":\"string\",\"description\":\"要抓取的页面 URL，必须完整包含协议\"},"
+                + "\"waitMs\":{\"type\":\"integer\",\"description\":\"JS 异步等待毫秒数，0 表示禁用 JS（默认 0）\"}"
+                + "},"
+                + "\"required\":[\"url\"]"
+                + "}";
     }
 
     @Override
-    public List<Map.Entry<String, String>> getResult(List<String> input) {
-        // 输入校验
-        if (input == null || input.isEmpty()) {
-            return errorResult("缺少必需参数: url");
-        }
-        String url = input.get(0);
-        if (url == null || url.isBlank()) {
-            return errorResult("url 不能为空");
+    public String execute(Map<String, Object> args) {
+        Object urlObj = args.get("url");
+        String url = urlObj == null ? null : String.valueOf(urlObj);
+        if (url == null || url.trim().isEmpty()) {
+            return errorJson("缺少必需参数: url");
         }
 
         // 解析 waitMs，默认为 0
         int waitMs = 0;
-        if (input.size() >= 2 && input.get(1) != null && !input.get(1).isBlank()) {
-            try {
-                waitMs = Integer.parseInt(input.get(1));
-            } catch (NumberFormatException e) {
-                return errorResult("waitMs 必须是整数: " + input.get(1));
+        Object waitObj = args.get("waitMs");
+        if (waitObj != null) {
+            if (waitObj instanceof Number) {
+                waitMs = ((Number) waitObj).intValue();
+            } else {
+                try {
+                    waitMs = Integer.parseInt(String.valueOf(waitObj).trim());
+                } catch (NumberFormatException e) {
+                    return errorJson("waitMs 必须是整数: " + waitObj);
+                }
             }
         }
 
@@ -68,20 +74,19 @@ public class FetchUrl implements Tool{
             // 获取最终渲染后的 HTML
             html = page.asXml();
         } catch (IOException e) {
-            return errorResult("请求失败: " + e.getMessage());
+            return errorJson("请求失败: " + e.getMessage());
         }
 
-        // 返回成功结果，键为 "html"
-        return List.of(new AbstractMap.SimpleEntry<>("html", html));
+        ObjectNode node = JSON.createObjectNode();
+        node.put("ok", true);
+        node.put("html", html);
+        return node.toString();
     }
 
-    /**
-     * 构造错误返回结果。
-     *
-     * @param errorMsg 错误描述
-     * @return 包含一个键 "error" 的 List
-     */
-    private List<Map.Entry<String, String>> errorResult(String errorMsg) {
-        return List.of(new AbstractMap.SimpleEntry<>("error", errorMsg));
+    private String errorJson(String errorMsg) {
+        ObjectNode node = JSON.createObjectNode();
+        node.put("ok", false);
+        node.put("error", errorMsg);
+        return node.toString();
     }
 }
