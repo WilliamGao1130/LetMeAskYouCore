@@ -4,7 +4,7 @@ import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
 plugins {
-    id("java")
+    id("java-library")
 }
 
 group = "org.bluepowerrobotics"
@@ -21,8 +21,10 @@ repositories {
 }
 
 dependencies {
-    // 统一的大模型适配层（openai / anthropic / dashscope / gemini 及网关）
-    implementation("org.bluepowerrobotics:AIAPIConverter:1.0-SNAPSHOT")
+    // 统一的大模型适配层（openai / anthropic / dashscope / gemini 及网关）。
+    // 核心公开 API（ChatEngine / AdapterManager）直接暴露 converter 类型，
+    // 必须用 api 让消费者（如 Android App）在编译期可见。
+    api("org.bluepowerrobotics:AIAPIConverter:1.0-SNAPSHOT")
 
     // JSON 处理（converter 的 api 依赖会透传，这里显式声明避免隐式依赖）
     implementation("com.fasterxml.jackson.core:jackson-databind:2.19.4")
