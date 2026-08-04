@@ -19,6 +19,7 @@ import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.Reasoning;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.RichText;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.TextFile;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.ToolCallContent;
+import org.bluepowerrobotics.letmeaskyou.core.toolcall.CurrentTimeTool;
 import org.bluepowerrobotics.letmeaskyou.core.toolcall.FetchUrl;
 import org.bluepowerrobotics.letmeaskyou.core.toolcall.ToolsManager;
 
@@ -158,16 +159,17 @@ public final class AskCLI {
                     + "请求可能返回 401");
         }
 
-        ChatRequest request = ChatEngine.requestBuilder(conversation, config,
-                opts.tools ? new ToolsManager(new FetchUrl()) : null).build();
+        ToolsManager tools = new ToolsManager(new CurrentTimeTool());
+        if (opts.tools) {
+            tools.register(new FetchUrl());
+        }
+        ChatRequest request = ChatEngine.requestBuilder(conversation, config, tools).build();
         request = expandFiles(request);
         request = trimHistory(request, opts.maxHistory);
 
         try (ChatModel model = AdapterManager.createChatModel(config)) {
-            ChatEngine engine = new ChatEngine(model,
-                    opts.tools ? new ToolsManager(new FetchUrl()) : null);
-            engine.stream(request, streamingListener(conversation, config),
-                    opts.tools ? toolRoundObserver() : null);
+            ChatEngine engine = new ChatEngine(model, tools);
+            engine.stream(request, streamingListener(conversation, config), toolRoundObserver());
         }
         save(historyFile, conversation);
     }
@@ -252,7 +254,8 @@ public final class AskCLI {
                             int length = node.path("html").asText("").length();
                             return "成功（HTML，约 " + length + " 字符）";
                         }
-                        return "成功";
+                        // 短 JSON（如 GetCurrentTime 的结果）直接展示，方便用户看到内容
+                        return trimmed.length() <= 200 ? trimmed : "成功（返回 JSON）";
                     }
                     return "失败: " + node.path("error").asText("未知错误");
                 }
@@ -611,7 +614,8 @@ public final class AskCLI {
                 + "      --max-tokens <n>                  最大输出 token 数\n"
                 + "  -af, --add-file <filepath>            添加文件到会话\n"
                 + "  -cf, --clear-file                     移除文件消息\n"
-                + "      --tools                           启用工具（FetchUrl），并展示工具调用/结果\n"
+                + "      --tools                           额外启用 FetchUrl 网页抓取；"
+                + "GetCurrentTime 时间工具始终可用\n"
                 + "      --data-dir <dir>                  会话数据目录 (默认: ~/.letmeaskyou)\n"
                 + "      --no-color                        关闭彩色输出\n"
                 + "  -h, --help                            显示此帮助信息\n"

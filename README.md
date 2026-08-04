@@ -108,8 +108,17 @@ java -jar build/libs/LetMeAskYouCore-1.0-SNAPSHOT-all.jar \
 | `-mh, --set-max-history-number` | 请求窗口轮数（默认 100） |
 | `--model-url / --model-name / --provider / --api-key` | 模型配置（默认 DeepSeek openai-chat / deepseek-v4-flash，key 读 `DEEPSEEK_API_KEY`） |
 | `-af, --add-file` / `-cf, --clear-file` | 添加/移除文件 |
-| `--tools` | 启用 FetchUrl 工具；工具调用与结果在流式过程中实时展示 |
+| `--tools` | 额外启用 FetchUrl 网页抓取；`GetCurrentTime` 时间工具始终可用，工具调用与结果在流式过程中实时展示 |
 | `--data-dir` | 会话数据目录（默认 `~/.letmeaskyou`，JSON 持久化） |
+
+内置工具：
+
+- `GetCurrentTime`：当前时间（ISO 到秒、日期、星期、时区偏移、Unix 时间戳），
+  可选 `timezone` 参数（IANA 名，如 `Asia/Shanghai`），纯 JDK 实现。
+- `FetchUrl`（需 `--tools`）：抓取网页 HTML。
+
+地理位置与任意本地文件读取不做进核心库：前者依赖外部 IP 服务或平台 GPS，
+后者有安全风险；需要时宿主应用可通过 `ToolsManager.register` 注册自定义工具。
 
 思考链展示依赖 AIAPIConverter 的 reasoning 支持：
 DeepSeek `reasoning_content`、Anthropic `thinking`、OpenAI Responses

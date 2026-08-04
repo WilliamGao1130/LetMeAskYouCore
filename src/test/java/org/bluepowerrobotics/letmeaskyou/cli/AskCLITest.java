@@ -23,6 +23,15 @@ class AskCLITest {
     }
 
     @Test
+    void shortOkJsonIsShownAsIs() {
+        String result = "{\"ok\":true,\"timezone\":\"Asia/Shanghai\",\"time\":\"15:20:31\"}";
+
+        String summary = AskCLI.summarizeToolResult(result);
+
+        assertEquals(result, summary);
+    }
+
+    @Test
     void fetchUrlFailureShowsError() {
         String result = "{\"ok\":false,\"error\":\"请求失败: timeout\"}";
 
