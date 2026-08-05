@@ -115,6 +115,9 @@ class ConversationTreeTest {
         assertEquals(regenerated.getId(), conversation.getCurrentLeafId());
         assertFalse(conversation.getMessage("a1").isActive());
         assertTrue(regenerated.isActive());
+        // 重新生成的节点应可追加内容（流式生成会写入）
+        regenerated.getContents().add(new RichText("新回答"));
+        assertEquals("新回答", regenerated.getContents().get(0).getStringContent());
     }
 
     @Test

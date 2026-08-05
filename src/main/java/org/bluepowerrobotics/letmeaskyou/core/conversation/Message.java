@@ -26,7 +26,9 @@ public class Message {
     public Message(Role role, List<Content> contents) {
         this.role = role;
         if (contents != null) {
-            this.contents = contents;
+            // 防御性拷贝：调用方可能传入不可变列表（如 emptyList()），
+            // 而流式生成过程中会往 contents 里追加内容
+            this.contents = new ArrayList<>(contents);
         }
     }
 
@@ -85,7 +87,7 @@ public class Message {
     }
 
     public void setContents(List<Content> contents) {
-        this.contents = contents == null ? new ArrayList<>() : contents;
+        this.contents = contents == null ? new ArrayList<>() : new ArrayList<>(contents);
     }
 
     public String getModelId() {
