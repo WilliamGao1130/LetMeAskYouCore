@@ -1,4 +1,4 @@
-package org.bluepowerrobotics.letmeaskyou.cli;
+package org.bluepowerrobotics.letmeaskyou.core.storage.file;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,21 +14,33 @@ import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.TextFile;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.ToolCallContent;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.ToolResult;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** 对话树的 JSON 序列化/反序列化（CLI 会话持久化用）。 */
-final class ConversationCodec {
+/**
+ * 对话树的 JSON 序列化/反序列化。
+ * <p>
+ * 只依赖 java.io（不依赖 java.nio.file），因此同时适用于桌面 CLI 与 Android。
+ * </p>
+ */
+public final class ConversationCodec {
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
     private ConversationCodec() {
     }
 
-    static String toJson(Conversation conversation) throws IOException {
+    public static String toJson(Conversation conversation) throws IOException {
         ObjectNode root = JSON.createObjectNode();
         root.put("id", conversation.getId());
         root.put("title", conversation.getTitle());
@@ -44,7 +56,7 @@ final class ConversationCodec {
         return JSON.writeValueAsString(root);
     }
 
-    static Conversation fromJson(String json) throws IOException {
+    public static Conversation fromJson(String json) throws IOException {
         JsonNode root = JSON.readTree(json);
         Conversation conversation = new Conversation();
         conversation.setId(root.path("id").asText());
@@ -66,6 +78,34 @@ final class ConversationCodec {
             }
         }
         return conversation;
+    }
+
+    /** 从文件读取（自动创建父目录）。 */
+    public static Conversation read(File file) throws IOException {
+        try (InputStream in = new FileInputStream(file)) {
+            return fromJson(new String(readAll(in), StandardCharsets.UTF_8));
+        }
+    }
+
+    /** 写入文件（自动创建父目录）。 */
+    public static void write(File file, Conversation conversation) throws IOException {
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new IOException("无法创建目录: " + parent);
+        }
+        try (OutputStream out = new FileOutputStream(file)) {
+            out.write(toJson(conversation).getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    private static byte[] readAll(InputStream in) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buf = new byte[8192];
+        int n;
+        while ((n = in.read(buf)) > 0) {
+            out.write(buf, 0, n);
+        }
+        return out.toByteArray();
     }
 
     private static ObjectNode messageToJson(Message message) {

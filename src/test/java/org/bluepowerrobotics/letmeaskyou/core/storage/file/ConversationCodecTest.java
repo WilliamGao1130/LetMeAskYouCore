@@ -1,4 +1,4 @@
-package org.bluepowerrobotics.letmeaskyou.cli;
+package org.bluepowerrobotics.letmeaskyou.core.storage.file;
 
 import org.bluepowerrobotics.letmeaskyou.core.conversation.Conversation;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.Message;
@@ -10,6 +10,8 @@ import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.ToolCallCont
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.ToolResult;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,6 +69,21 @@ class ConversationCodecTest {
         assertEquals("call-1", toolResultRestored.getToolCallId());
         assertEquals("<html>ok</html>", toolResultRestored.getStringContent());
         assertNotNull(toolResultRestored.getToolCallId());
+    }
+
+    @Test
+    void readWriteUsesJavaIo() throws Exception {
+        File dir = Files.createTempDirectory("codec-test").toFile();
+        File file = new File(new File(dir, "nested"), "c.json");
+        Conversation conversation = new Conversation("c1", "t");
+        conversation.addChild(null, message("root", Message.Role.SYSTEM, new RichText("hi")));
+
+        ConversationCodec.write(file, conversation);
+        Conversation restored = ConversationCodec.read(file);
+
+        assertEquals("c1", restored.getId());
+        assertEquals("root", restored.getRootMessageId());
+        assertEquals("hi", restored.getMessage("root").getContents().get(0).getStringContent());
     }
 
     private static Message message(String id, Message.Role role, Content... contents) {

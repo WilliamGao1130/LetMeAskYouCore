@@ -19,6 +19,7 @@ import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.Reasoning;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.RichText;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.TextFile;
 import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.ToolCallContent;
+import org.bluepowerrobotics.letmeaskyou.core.storage.file.ConversationCodec;
 import org.bluepowerrobotics.letmeaskyou.core.toolcall.CurrentTimeTool;
 import org.bluepowerrobotics.letmeaskyou.core.toolcall.FetchUrl;
 import org.bluepowerrobotics.letmeaskyou.core.toolcall.ToolsManager;
@@ -343,6 +344,7 @@ public final class AskCLI {
                 .responseFormat(base.getResponseFormat())
                 .responseFormatSchema(base.getResponseFormatSchema())
                 .responseFormatName(base.getResponseFormatName())
+                .reasoningEffort(base.getReasoningEffort())
                 .apiKey(base.getApiKey());
         if (base.getTools() != null && !base.getTools().isEmpty()) {
             builder.tools(base.getTools());
@@ -438,13 +440,11 @@ public final class AskCLI {
     }
 
     private static Conversation load(File file) throws IOException {
-        byte[] bytes = Files.readAllBytes(file.toPath());
-        return ConversationCodec.fromJson(new String(bytes, StandardCharsets.UTF_8));
+        return ConversationCodec.read(file);
     }
 
     private static void save(File file, Conversation conversation) throws IOException {
-        Files.write(file.toPath(),
-                ConversationCodec.toJson(conversation).getBytes(StandardCharsets.UTF_8));
+        ConversationCodec.write(file, conversation);
     }
 
     private static String resolveSession(File dataDir, String sessionArg) throws IOException {

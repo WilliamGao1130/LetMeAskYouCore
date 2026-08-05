@@ -309,6 +309,7 @@ public final class ChatEngine {
                 .responseFormat(base.getResponseFormat())
                 .responseFormatSchema(base.getResponseFormatSchema())
                 .responseFormatName(base.getResponseFormatName())
+                .reasoningEffort(base.getReasoningEffort())
                 .apiKey(base.getApiKey());
         if (base.getTools() != null && !base.getTools().isEmpty()) {
             builder.tools(base.getTools());
