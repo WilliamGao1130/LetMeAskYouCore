@@ -494,7 +494,7 @@ public final class AskCLI {
         boolean clearFile;
         boolean tools;
         long maxTokens;
-        File dataDir = new File(System.getProperty("user.home"), ".letmeaskyou");
+        File dataDir = new File(System.getProperty("user.home"), ".lmau");
 
         boolean parse(String[] args) {
             for (int i = 0; i < args.length; i++) {

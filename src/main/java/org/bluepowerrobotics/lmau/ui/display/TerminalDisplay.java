@@ -4,4 +4,5 @@ public interface TerminalDisplay {
     public int[] getMaxPx();
     public int[] calculateMaxChar();
     public void callForKeyBoard();
+    public boolean pictureAvailable();
 }

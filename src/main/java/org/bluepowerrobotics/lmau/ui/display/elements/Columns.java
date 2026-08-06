@@ -1,6 +1,6 @@
 package org.bluepowerrobotics.lmau.ui.display.elements;
 
-public class TextField implements Element{
+public class Columns implements Element{
     @Override
     public int getMinX() {
         return 0;

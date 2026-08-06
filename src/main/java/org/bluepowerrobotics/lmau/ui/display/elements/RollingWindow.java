@@ -1,6 +1,11 @@
 package org.bluepowerrobotics.lmau.ui.display.elements;
 
-public class TextField implements Element{
+import java.util.ArrayList;
+import java.util.List;
+
+public class RollingWindow implements Element{
+    private List<Element> Contents = new ArrayList<Element>();
+    private int x=-1,y=-1;
     @Override
     public int getMinX() {
         return 0;

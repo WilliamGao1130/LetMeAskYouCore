@@ -5,11 +5,12 @@ import java.util.List;
 
 /** 应用级设置（平台无关部分只定义数据结构，持久化交给 SettingsStorage）。 */
 public class SettingsConfig {
-    public enum Theme { LIGHT, DARK, SYSTEM }
+
 
     private String systemPrompt;
-    private Theme theme = Theme.SYSTEM;
+
     private List<ModelConfig> modelConfigs = new ArrayList<>();
+
 
     public SettingsConfig() {
     }
@@ -22,13 +23,6 @@ public class SettingsConfig {
         this.systemPrompt = systemPrompt;
     }
 
-    public Theme getTheme() {
-        return theme;
-    }
-
-    public void setTheme(Theme theme) {
-        this.theme = theme;
-    }
 
     public List<ModelConfig> getModelConfigs() {
         return modelConfigs;
