@@ -35,6 +35,8 @@ dependencies {
     // 运行时不需要具体日志实现，避免 SLF4J 警告
     runtimeOnly("org.slf4j:slf4j-nop:2.0.18")
 
+    implementation("com.ibm.icu:icu4j:78.3")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
