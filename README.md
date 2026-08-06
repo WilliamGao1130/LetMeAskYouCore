@@ -87,7 +87,7 @@ try (ChatModel model = AdapterManager.createChatModel(config)) {
 
 ## CLI（仿 “那我问你 / ask-ai”）
 
-基于核心实现了一个命令行测试程序 `org.bluepowerrobotics.letmeaskyou.cli.AskCLI`，
+基于核心实现了一个命令行测试程序 `org.bluepowerrobotics.lmau.cli.AskCLI`，
 行为对齐原来的 bash+python 脚本，并增加思考链/工具结果展示：
 
 ```bash

@@ -1,18 +1,18 @@
 package org.bluepowerrobotics;
 
-import org.bluepowerrobotics.converter.core.ChatChunk;
-import org.bluepowerrobotics.converter.core.ChatModel;
-import org.bluepowerrobotics.converter.core.ChatRequest;
-import org.bluepowerrobotics.converter.core.ChatStreamListener;
-import org.bluepowerrobotics.letmeaskyou.core.adapter.AdapterManager;
-import org.bluepowerrobotics.letmeaskyou.core.chat.ChatEngine;
-import org.bluepowerrobotics.letmeaskyou.core.config.ModelConfig;
-import org.bluepowerrobotics.letmeaskyou.core.conversation.Conversation;
-import org.bluepowerrobotics.letmeaskyou.core.conversation.Message;
-import org.bluepowerrobotics.letmeaskyou.core.conversation.contents.RichText;
-import org.bluepowerrobotics.letmeaskyou.core.toolcall.FetchUrl;
-import org.bluepowerrobotics.letmeaskyou.core.toolcall.Tool;
-import org.bluepowerrobotics.letmeaskyou.core.toolcall.ToolsManager;
+import org.bluepowerrobotics.lmau.converter.core.ChatChunk;
+import org.bluepowerrobotics.lmau.converter.core.ChatModel;
+import org.bluepowerrobotics.lmau.converter.core.ChatRequest;
+import org.bluepowerrobotics.lmau.converter.core.ChatStreamListener;
+import org.bluepowerrobotics.lmau.core.adapter.AdapterManager;
+import org.bluepowerrobotics.lmau.core.chat.ChatEngine;
+import org.bluepowerrobotics.lmau.core.config.ModelConfig;
+import org.bluepowerrobotics.lmau.core.conversation.Conversation;
+import org.bluepowerrobotics.lmau.core.conversation.Message;
+import org.bluepowerrobotics.lmau.core.conversation.contents.RichText;
+import org.bluepowerrobotics.lmau.core.toolcall.FetchUrl;
+import org.bluepowerrobotics.lmau.core.toolcall.Tool;
+import org.bluepowerrobotics.lmau.core.toolcall.ToolsManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,12 +80,12 @@ public final class Main {
         Conversation conversation = new Conversation(
                 UUID.randomUUID().toString(), "cli-demo");
         Message root = new Message(Message.Role.SYSTEM,
-                Arrays.<org.bluepowerrobotics.letmeaskyou.core.conversation.contents.Content>asList(
+                Arrays.<org.bluepowerrobotics.lmau.core.conversation.contents.Content>asList(
                         new RichText("You are a helpful assistant.")));
         root.setId("root");
         conversation.addChild(null, root);
         Message user = new Message(Message.Role.USER,
-                Arrays.<org.bluepowerrobotics.letmeaskyou.core.conversation.contents.Content>asList(
+                Arrays.<org.bluepowerrobotics.lmau.core.conversation.contents.Content>asList(
                         new RichText(String.join(" ", positional))));
         user.setId("user");
         conversation.addChild("root", user);
