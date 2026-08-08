@@ -1,5 +1,7 @@
 package org.bluepowerrobotics.lmau.ui.display.elements;
 
+import org.bluepowerrobotics.lmau.ui.display.Text;
+
 public class Box implements Element{
     boolean hasFrame=false;
     int headInterval=1,leftInterval=2,bottomInterval=1,rightInterval=2;
@@ -111,6 +113,16 @@ public class Box implements Element{
 
     @Override
     public void onSelect(boolean ifSelected) {
+
+    }
+
+    @Override
+    public boolean canInput() {
+        return false;
+    }
+
+    @Override
+    public void onInput(char[] input) {
 
     }
 }

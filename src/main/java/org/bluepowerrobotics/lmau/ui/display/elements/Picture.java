@@ -1,5 +1,7 @@
 package org.bluepowerrobotics.lmau.ui.display.elements;
 
+import org.bluepowerrobotics.lmau.ui.display.Text;
+
 public class Picture implements Element{
     private Box picDiscriptionBox;
 
@@ -67,6 +69,16 @@ public class Picture implements Element{
 
     @Override
     public void onSelect(boolean ifSelected) {
+
+    }
+
+    @Override
+    public boolean canInput() {
+        return false;
+    }
+
+    @Override
+    public void onInput(char[] input) {
 
     }
 }

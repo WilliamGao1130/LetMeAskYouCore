@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.bluepowerrobotics.lmau.ui.display;
-
-import org.bluepowerrobotics.lmau.util.Range;
+package org.bluepowerrobotics.lmau.util;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,7 +24,7 @@ import java.util.HashMap;
  * Color实现，全-1表示默认颜色
  */
 public class Color {
-    public static final int BLACK       = 0xFF000000;
+     public static final int BLACK       = 0xFF000000;
      public static final int DKGRAY      = 0xFF444444;
      public static final int GRAY        = 0xFF888888;
      public static final int LTGRAY      = 0xFFCCCCCC;

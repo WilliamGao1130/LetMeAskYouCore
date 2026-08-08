@@ -1,17 +1,17 @@
-package org.bluepowerrobotics.lmau.ui.display.elements;
-
-import org.bluepowerrobotics.lmau.ui.display.Color;
+package org.bluepowerrobotics.lmau.ui.display;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.icu.lang.UCharacter;
 import com.ibm.icu.lang.UProperty;
+import org.bluepowerrobotics.lmau.util.Color;
 
 public class Text {
     private List<Text> textList=new ArrayList<Text>();
     Character content=null;
     Color color = new Color();
+    Color backgroundColor = Color.valueOf(0x00000000);
     int lengthTime = 1;
     public Text(String string){
         if(string.length()>1){
@@ -68,4 +68,8 @@ public class Text {
         return getType();
     }
     enum TEXT_TYPE{MULTI,HALF_WIDTH,FULL_WIDTH,NULL}//NULL means the second place of a FULL_WIDTH character.
+
+    public void onSelected(){
+
+    };
 }

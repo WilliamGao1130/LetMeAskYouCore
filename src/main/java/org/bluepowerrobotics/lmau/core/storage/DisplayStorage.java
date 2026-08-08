@@ -1,5 +1,8 @@
 package org.bluepowerrobotics.lmau.core.storage;
 
-public interface DisplayStorage {
+import org.bluepowerrobotics.lmau.core.config.DisplayConfig;
 
+public interface DisplayStorage {
+    DisplayConfig getDisplayConfig();
+    void setDisplayConfig(DisplayConfig displayConfig);
 }
